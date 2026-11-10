@@ -1,0 +1,38 @@
+# Render Blueprint — one web service: Express API + the built React app on the same origin.
+# 1) Create a free MongoDB Atlas cluster and copy its connection string.
+# 2) In Render: New → Blueprint → pick this repo. Fill the `sync: false` secrets when prompted.
+# 3) After the first deploy, run `npm run precache --prefix backend` once (Render Shell) to warm showcase topics.
+#
+# Cold starts: Render's free plan sleeps after ~15 min idle (≈30–60 s wake-up). For demos, either use the
+# Starter plan, or point an uptime monitor (e.g. UptimeRobot, every 10 min) at https://<your-app>/api/health.
+services:
+  - type: web
+    name: tiresias
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run install:all && VITE_API_URL=/api npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: CLIENT_URL
+        sync: false # e.g. https://tiresias.onrender.com
+      - key: MONGO_URI
+        sync: false # MongoDB Atlas connection string
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: YOUTUBE_API_KEY
+        sync: false
+      - key: GEMINI_DAILY_CALL_CAP
+        value: "1000"
+      - key: QUOTA_TRY_PER_IP
+        value: "3"

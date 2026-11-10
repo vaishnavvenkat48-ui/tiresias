@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Council Report — Tiresias Review</title>
+<style>
+  :root { --ink:#16181d; --ink2:#4a5060; --ink3:#7a8090; --line:#e4e6eb; --bg:#ffffff; --soft:#f6f7f9;
+          --c-con:#c2410c; --c-fp:#4338ca; --c-exp:#047857; --c-out:#7c3aed; --c-exe:#0369a1; --accent:#4338ca; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 40px 20px 60px; }
+  .eyebrow { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+  h1 { font-size:28px; line-height:1.25; margin:6px 0 10px; }
+  h2 { font-size:18px; margin:30px 0 10px; }
+  .q { background:var(--soft); border:1px solid var(--line); border-radius:12px; padding:16px 18px; color:var(--ink2); }
+  .verdict { border:2px solid var(--accent); border-radius:16px; padding:22px 24px; margin-top:26px; }
+  .verdict h3 { font-size:15px; margin:18px 0 6px; color:var(--accent); }
+  .verdict h3:first-child { margin-top:0; }
+  .first { background:#eef0ff; border-radius:12px; padding:14px 16px; font-weight:600; margin-top:18px; }
+  ul { margin:6px 0; padding-left:20px; } li { margin:4px 0; }
+  ol { margin:6px 0; padding-left:22px; } ol li { margin:6px 0; }
+  .grid { display:grid; grid-template-columns: 170px repeat(3, 1fr); gap:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .grid > div { padding:10px 12px; border-bottom:1px solid var(--line); font-size:13.5px; }
+  .grid .h { background:var(--soft); font-weight:600; color:var(--ink2); font-size:12.5px; }
+  .name { font-weight:600; display:flex; align-items:center; gap:8px; }
+  .sw { width:10px; height:10px; border-radius:99px; display:inline-block; }
+  .bar { height:8px; border-radius:99px; background:var(--soft); position:relative; margin-top:4px; }
+  .bar span { position:absolute; inset:0 auto 0 0; border-radius:99px; }
+  .score { font-size:12px; color:var(--ink3); }
+  .stance { grid-column: 1 / -1; color:var(--ink2); font-size:13px; background:#fcfcfd; }
+  .legend { font-size:12.5px; color:var(--ink3); margin-top:8px; }
+  details { border:1px solid var(--line); border-radius:12px; padding:0; margin:10px 0; background:#fff; }
+  summary { cursor:pointer; padding:12px 16px; font-weight:600; list-style:none; display:flex; align-items:center; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::after { content:'+'; margin-left:auto; color:var(--ink3); font-weight:400; }
+  details[open] summary::after { content:'–'; }
+  details .body { padding:0 18px 14px; color:var(--ink2); font-size:14px; }
+  .tag { font-size:11.5px; font-weight:600; padding:2px 8px; border-radius:99px; background:var(--soft); color:var(--ink2); }
+  .ok { color:#047857; } .warn { color:#b45309; }
+  footer { margin-top:40px; padding-top:16px; border-top:1px solid var(--line); color:var(--ink3); font-size:12.5px; }
+  @media (max-width:640px) { .grid { grid-template-columns: 1fr 1fr 1fr 1fr; } .grid .name{font-size:12.5px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">LLM Council · 5 advisors · 5 anonymous peer reviews · chairman synthesis</p>
+  <h1>Tiresias: what's waste, what to fix, what to build next</h1>
+  <div class="q"><strong>Question:</strong> "Review this website and think what can be better and what things are waste, and focus on making the website even better in both backend and frontend."</div>
+
+  <div class="verdict">
+    <h3>The Recommendation</h3>
+    <p><strong>Make Tiresias a one-page product that keeps its promise, then put it online.</strong></p>
+    <ol>
+      <li><strong>Make the graph deterministic first.</strong> Render Wikidata/Wikipedia nodes immediately. Gemini runs in the background and streams its AI-suggested additions over real server-sent events (SSE). Use a non-flagship model first and keep the existing fallback.</li>
+      <li><strong>Make "verified" honest.</strong> Wikipedia search-similarity links become a lower tier ("related, per search") or AI-suggested. Expansion must not mark everything verified. Hand-check about 20 topics as a small benchmark of edge correctness.</li>
+      <li><strong>Cut.</strong> Two themes, ambient effects off, legacy backend code deleted once the tests pass. Merge Home, Analytics and History into one dashboard. Shelve Learning Paths. Make saving explicit.</li>
+      <li><strong>Fix the basics.</strong> Persistent Mongo by default. Plain-language legend ("Solid = backed by Wikipedia/Wikidata. Dotted = AI's guess."). CC BY-SA credit next to Wikipedia summaries. A "click a node" hint on first load.</li>
+      <li><strong>Ship.</strong> Add daily quotas, a Gemini spend cap and per-IP limits, then allow anonymous trials of 1–3 topics. Precache the showcase topics. Add one Playwright core-loop test and one real-API contract test. Deploy with a keep-warm or paid tier so the host doesn't sleep. Then add share links. No other new features until outside users exist.</li>
+    </ol>
+    <div class="first">The one thing to do first: delete the hard-coded seed credential, replace it with environment variables, and rotate that password wherever it's real. It takes ten minutes and it's the only item that does harm today. Then start the Wikidata-first inversion.</div>
+
+    <h3>Where the council agrees</h3>
+    <ul>
+      <li><strong>The core loop is the product.</strong> Topic → trustworthy graph → click a node → real knowledge with provenance. The 13 pages hide one page that works.</li>
+      <li><strong>Latency undermines the main claim.</strong> An overloaded LLM on the critical path, ~20 s cold starts and fake timer stages sit badly with "verified, not hallucinated."</li>
+      <li><strong>Cut the decoration and dead weight</strong>: 7 atmospheres × 2 themes, legacy folders and aliases, the empty Analytics/History/Home-stats/Learning Paths pages.</li>
+      <li><strong>Persistence and saving are wrong.</strong> In-memory Mongo makes six pages fake, and silent auto-save clutters the library.</li>
+      <li><strong>The seed credential must go now,</strong> and the core loop needs at least one frontend test (there are none today).</li>
+    </ul>
+
+    <h3>Where the council clashes</h3>
+    <ul>
+      <li><strong>Fix the cause or hide the latency.</strong> The Contrarian and Executor would partly hide it with caching, a cheaper model and SSE. First Principles fixes the structure: build the graph from Wikidata first, then add AI suggestions in the background. <span class="ok">First Principles wins; all five reviewers agreed.</span></li>
+      <li><strong>Shrink or expand.</strong> The Expansionist wants sharing, embeds, exports, spaced repetition and graph merging. Everyone else wants to cut. <span class="ok">Cutting wins</span>: one developer, no users. Keep one idea: a public share link once the app is deployed.</li>
+      <li><strong>The signup wall.</strong> The Outsider wants anonymous trials. That's right for a demo, but <span class="warn">only with per-IP limits and a spend cap</span>.</li>
+      <li><strong>The Assistant.</strong> The Outsider would cut it. Keep it: it's already grounded in the user's graph and cites its sources.</li>
+    </ul>
+
+    <h3>Blind spots the council caught</h3>
+    <ul>
+      <li><strong>"Verified" is weaker than it sounds.</strong> A Wikipedia "more like this" search hit counts as verified, and expansion marks every new edge verified that way. So the badge means "a source links these," not "this relationship is true."</li>
+      <li><strong>Deploying exposes cost and abuse.</strong> There are per-minute limits, but no daily quotas, no Gemini spend cap and nothing per-IP for anonymous use. Free-tier hosts also sleep, adding a second cold start on top of Gemini's.</li>
+      <li><strong>Wikipedia summary text isn't credited as CC BY-SA</strong>, which is a licence-compliance gap.</li>
+      <li><strong>Accessibility:</strong> screen readers can't use the graph canvas, and nobody has checked performance on low-end phones.</li>
+      <li><strong>All 22 backend tests are mocked.</strong> Nothing runs against the real Wikidata, Wikipedia or OpenAlex APIs.</li>
+      <li><strong>Credential history:</strong> if the credential was ever pushed anywhere, rotate it and purge it from that history.</li>
+    </ul>
+  </div>
+
+  <h2>Where each advisor stands</h2>
+  <div class="grid" role="table" aria-label="Advisor positions scored 1 to 5">
+    <div class="h">Advisor</div><div class="h">Cut scope</div><div class="h">Fix reliability</div><div class="h">Add features</div>
+
+    <div class="name"><span class="sw" style="background:var(--c-fp)"></span>First Principles</div>
+    <div><span class="score">5 / 5</span><div class="bar"><span style="width:100%;background:var(--c-fp)"></span></div></div>
+    <div><span class="score">5 / 5</span><div class="bar"><span style="width:100%;background:var(--c-fp)"></span></div></div>
+    <div><span class="score">1 / 5</span><div class="bar"><span style="width:20%;background:var(--c-fp)"></span></div></div>
+    <div class="stance">Build for a 5-minute evaluator; invert to Wikidata-first with async Gemini; make provenance the hero; cut the other 12 pages. <span class="tag">Unanimous strongest</span></div>
+
+    <div class="name"><span class="sw" style="background:var(--c-con)"></span>Contrarian</div>
+    <div><span class="score">4 / 5</span><div class="bar"><span style="width:80%;background:var(--c-con)"></span></div></div>
+    <div><span class="score">5 / 5</span><div class="bar"><span style="width:100%;background:var(--c-con)"></span></div></div>
+    <div><span class="score">1 / 5</span><div class="bar"><span style="width:20%;background:var(--c-con)"></span></div></div>
+    <div class="stance">The core loop fails live. Get the first render under 5 s with caching, a fast model and streaming; cut themes, decoration and legacy code.</div>
+
+    <div class="name"><span class="sw" style="background:var(--c-exe)"></span>Executor</div>
+    <div><span class="score">4 / 5</span><div class="bar"><span style="width:80%;background:var(--c-exe)"></span></div></div>
+    <div><span class="score">4 / 5</span><div class="bar"><span style="width:80%;background:var(--c-exe)"></span></div></div>
+    <div><span class="score">1 / 5</span><div class="bar"><span style="width:20%;background:var(--c-exe)"></span></div></div>
+    <div class="stance">Credential, then legacy cleanup and themes, then persistence, SSE and a fast model, then a Playwright test, a merged dashboard and deployment. <span class="tag">Runner-up</span></div>
+
+    <div class="name"><span class="sw" style="background:var(--c-out)"></span>Outsider</div>
+    <div><span class="score">4 / 5</span><div class="bar"><span style="width:80%;background:var(--c-out)"></span></div></div>
+    <div><span class="score">2 / 5</span><div class="bar"><span style="width:40%;background:var(--c-out)"></span></div></div>
+    <div><span class="score">2 / 5</span><div class="bar"><span style="width:40%;background:var(--c-out)"></span></div></div>
+    <div class="stance">Say plainly what users get. Drop the signup wall, the empty pages and the jargon; stop fake loading and silent saves.</div>
+
+    <div class="name"><span class="sw" style="background:var(--c-exp)"></span>Expansionist</div>
+    <div><span class="score">2 / 5</span><div class="bar"><span style="width:40%;background:var(--c-exp)"></span></div></div>
+    <div><span class="score">3 / 5</span><div class="bar"><span style="width:60%;background:var(--c-exp)"></span></div></div>
+    <div><span class="score">5 / 5</span><div class="bar"><span style="width:100%;background:var(--c-exp)"></span></div></div>
+    <div class="stance">Provenance is the asset; add sharing, exports, spaced repetition and graph merging. <span class="tag">Unanimous biggest blind spot</span> (two claims are already contradicted by the code)</div>
+  </div>
+  <p class="legend">Scores are the chairman's 1–5 ratings of how strongly each advisor pushed on each axis. Four of five lean "cut + fix reliability"; only the Expansionist leans "add features".</p>
+
+  <h2>Advisor responses</h2>
+  <details><summary><span class="sw" style="background:var(--c-con)"></span>The Contrarian</summary><div class="body">
+    <p>The fatal flaw is that the core loop fails exactly when someone is watching: an overloaded Gemini, up to 20 s cold, and fake timer stages. Precompute and cache 20–30 showcase topics, put a cheap fast model first, and stream real partial results with Wikidata/Wikipedia nodes first and AI nodes after. If nothing renders in under 5 s, nothing else matters.</p>
+    <p>A real-looking credential is committed in <code>seed.js</code> [redacted]: rotate and purge it. In-memory Mongo makes six pages fake. Cut the custom date ranges in Analytics, go from 7×2 themes to 1×2, drop the metal knobs and glossy buttons, and delete the legacy backend. If AI-suggested nodes look like verified ones, the "verified knowledge" claim falls apart. Warns about the YouTube quota and says auto-save clutters the library. Add one Playwright smoke test.</p>
+    <p class="score">Fact-check: YouTube is already click-only and cached 7 days, and AI-suggested nodes are already drawn differently.</p>
+  </div></details>
+  <details><summary><span class="sw" style="background:var(--c-fp)"></span>The First Principles Thinker</summary><div class="body">
+    <p>"Make it better" is the wrong question; the right one is what Tiresias is for. With no users and no deployment, the real customer is an evaluator who has about five minutes and needs one moment: type a topic, a trustworthy graph appears, click a node, real knowledge with provenance. The core contradiction is a product built on "verified, not hallucinated" whose critical path is an overloaded LLM and fake progress.</p>
+    <p>Cut Analytics, History, Home stats, Learning Paths, 5 of 7 atmospheres, the legacy code, the seed credentials and auto-save. Invert the pipeline: draw the deterministic Wikidata graph immediately and treat Gemini as asynchronous enrichment. Replace the timer stages with real SSE events and use persistent Mongo. Make provenance the hero and add a small set of frontend tests. "13 pages wrapped around a 1-page product."</p>
+  </div></details>
+  <details><summary><span class="sw" style="background:var(--c-exp)"></span>The Expansionist</summary><div class="body">
+    <p>The provenance-tagged graph is the buried asset and should be the headline. Cut the legacy code, the mirror collections, the seed credentials, 5 of the 7 atmospheres and the fake stages. Fix persistence, turn the cold start into a live demo with SSE progress, and seed Analytics and History during onboarding.</p>
+    <p>Upside: shareable and embeddable graphs; a graph-grounded assistant; learning paths built from graph structure, with spaced repetition; cross-topic merging; exports to Obsidian, Anki, Mermaid and JSON-LD.</p>
+    <p class="score">Fact-check: the assistant is already graph-grounded with citations, and provenance already has badges, a legend and distinct line styles.</p>
+  </div></details>
+  <details><summary><span class="sw" style="background:var(--c-out)"></span>The Outsider</summary><div class="body">
+    <p>"See how ideas connect" doesn't say what I get. Say: "Type any topic, get a map of everything related to it — with sources." Drop the signup wall: let people try 1–3 topics and ask for signup only when they save. Cut the empty pages, the jargon and the decoration (keep one dark and one light theme).</p>
+    <p>Fake loading stages destroy trust in the "verified" labels. Use plain words: "Solid = backed by Wikipedia/Wikidata. Dotted = AI's guess." Silent auto-save should ask or announce. The inspector is the gem, so add a "click a node" hint on first load.</p>
+  </div></details>
+  <details><summary><span class="sw" style="background:var(--c-exe)"></span>The Executor</summary><div class="body">
+    <p><strong>Day 1:</strong> delete the seed credential and rotate the password; move the legacy root folders out, run the tests, and delete them if everything still passes; grep for and delete unused legacy aliases and collections; cut 7 atmospheres to 2 and turn ambient effects off by default.</p>
+    <p><strong>Day 2:</strong> persistent Mongo by default; explicit Save; real SSE events; a non-flagship model first.</p>
+    <p><strong>Week 2:</strong> one Playwright core-loop test; merge Home, Analytics and History; deploy on Render with Atlas. "Everything else is a guess until someone outside your machine can open a URL."</p>
+  </div></details>
+
+  <h2>Peer review highlights</h2>
+  <details open><summary>What 5 anonymous reviewers concluded</summary><div class="body">
+    <ul>
+      <li><strong>Strongest: First Principles, 5 of 5 votes.</strong> It names the real audience and fixes the latency at its cause rather than hiding it. The Executor was runner-up for concrete ordering and "deploy it."</li>
+      <li><strong>Biggest blind spot: Expansionist, 5 of 5 votes.</strong> Two claims are wrong, and it proposes five features for a solo developer with no users. The Contrarian and Executor also suggested fixes that already exist (YouTube caching, distinct AI styling).</li>
+      <li><strong>Missed by every advisor:</strong> an audit of whether "verified" edges are correct; quotas and a spend cap before any public or anonymous access; free-tier host sleep; accessibility of the graph canvas; Wikipedia CC BY-SA attribution; contract tests against the real APIs; purging the credential from any pushed history.</li>
+    </ul>
+  </div></details>
+
+  <footer>Council session: 1 November 2026 · Subject: Tiresias (frontend + backend review) · Method: 5 independent advisors → 5 anonymised peer reviews → chairman synthesis (after Karpathy's LLM Council). Before synthesis, advisor claims were fact-checked against the codebase. The seed-file credential is redacted throughout.</footer>
+</div>
+</body>
+</html>

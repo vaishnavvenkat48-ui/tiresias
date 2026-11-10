@@ -1,0 +1,18 @@
+{
+  "name": "tiresias",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tiresias — Intelligent Knowledge Discovery and Visualization System (Phase 1 foundation)",
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c magenta,cyan \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=backend --if-present || (cd backend && npm run dev)",
+    "dev:frontend": "npm run dev --workspace=frontend --if-present || (cd frontend && npm run dev)",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "start": "node backend/server.js",
+    "test": "npm test --prefix backend && npm run test:e2e --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+
+.data/
+
+# local tooling and test output
+.taste-skill/
+.claude/
+test-results/
+playwright-report/
+*.err
